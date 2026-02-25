@@ -1,0 +1,13 @@
+{
+  "name": "masakielastic/php-ext-hello-zig",
+  "description": "PHP extension that returns Hello World from a Zig FFI library",
+  "type": "php-ext",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.1"
+  },
+  "php-ext": {
+    "extension-name": "hello_zig",
+    "build-path": "ext"
+  }
+}
