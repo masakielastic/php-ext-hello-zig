@@ -1,5 +1,5 @@
 {
-  "name": "masakielastic/php-ext-hello-zig",
+  "name": "masakielastic/hello-zig",
   "description": "PHP extension that returns Hello World from a Zig FFI library",
   "type": "php-ext",
   "license": "MIT",
