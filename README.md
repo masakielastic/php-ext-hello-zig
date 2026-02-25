@@ -1,30 +1,36 @@
 # php-ext-hello-zig
 
-PHP extension example that calls a Zig function via C ABI and returns a string to PHP.
+Learning-focused sample of a PHP extension that calls Zig through a C ABI (FFI boundary).
 
-## Layout
+## Learning goals
 
-- `ext`: extension build directory for PIE/phpize
-- `ext/hello_zig.c`: extension source code
-- `ext/zig`: Zig library source and `build.zig`
-- `ext/tests`: phpt tests
+- Understand how PHP extension C code calls a Zig function.
+- Understand how Zig builds a static library consumed by PHP extension build.
+- Understand how PIE metadata points to the extension build directory.
 
-## PIE metadata
+## Project layout
 
-`composer.json` is configured for PIE with:
+- `composer.json`: PIE metadata (`type: php-ext`, build path, extension name)
+- `ext/config.m4`: phpize/autoconf build integration and Zig library linking
+- `ext/hello_zig.c`: PHP function registration and call into Zig ABI
+- `ext/zig/build.zig`: Zig static library build definition
+- `ext/zig/src/hellozig.zig`: exported Zig function (`hellozig_message`)
+- `ext/zig/src/hellozig.h`: C header consumed from `hello_zig.c`
+- `ext/tests/001_hello_zig_hello.phpt`: runtime behavior test
 
-- `type: php-ext`
-- `php-ext.extension-name: hello_zig`
-- `php-ext.build-path: ext`
+## How the call flow works
 
-## Build locally
+1. PHP userland calls `hello_zig_hello()`.
+2. PHP extension C code (`ext/hello_zig.c`) invokes `hellozig_message()`.
+3. `hellozig_message()` is implemented in Zig and exported with C ABI.
+4. Returned C string is sent back to PHP as a string result.
+
+## Build and run (from clean state)
 
 Prerequisites:
 
-- PHP development tools (`phpize`, headers)
-- Zig available on PATH (or pass `ZIG=/path/to/zig`)
-
-Commands:
+- `phpize` and PHP development headers
+- Zig compiler (on `PATH`, or provided via `ZIG=/path/to/zig`)
 
 ```bash
 cd ext
@@ -46,3 +52,20 @@ Hello World from Zig FFI!
 cd ext
 make test TESTS=tests/001_hello_zig_hello.phpt
 ```
+
+## What to edit while learning
+
+- Change return text: `ext/zig/src/hellozig.zig`
+- Add new PHP function: `ext/hello_zig.c` (function entry table + implementation)
+- Add new Zig export and header declaration: `ext/zig/src/hellozig.zig` and `ext/zig/src/hellozig.h`
+- Add regression test: `ext/tests/*.phpt`
+
+## Troubleshooting
+
+- `zig command not found`:
+  - Pass explicit path: `ZIG=/absolute/path/to/zig ./configure --enable-hello-zig`
+- Build errors after file moves:
+  - Re-run from clean build dir: `phpize` then `./configure` then `make`
+- Extension not loading:
+  - Confirm `.so` exists at `ext/modules/hello_zig.so`
+  - Use absolute path in `-dextension=...`
