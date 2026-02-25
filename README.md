@@ -25,6 +25,26 @@ Learning-focused sample of a PHP extension that calls Zig through a C ABI (FFI b
 3. `hellozig_message()` is implemented in Zig and exported with C ABI.
 4. Returned C string is sent back to PHP as a string result.
 
+## Install with PIE (from Packagist)
+
+This package is intended to be installable from Packagist:
+
+- `https://packagist.org/packages/masakielastic/hello-zig`
+
+Example:
+
+```bash
+pie install masakielastic/hello-zig
+php --ri hello_zig
+php -r 'echo hello_zig_hello(), PHP_EOL;'
+```
+
+Expected output:
+
+```text
+Hello World from Zig FFI!
+```
+
 ## Build and run (from clean state)
 
 Prerequisites:
