@@ -1,4 +1,4 @@
-# php-ext-hello-zig
+# hello-zig
 
 Learning-focused sample of a PHP extension that calls Zig through a C ABI (FFI boundary).
 
